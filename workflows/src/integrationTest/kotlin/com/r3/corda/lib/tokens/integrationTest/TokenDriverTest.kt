@@ -46,11 +46,13 @@ class TokenDriverTest {
     @Test
     fun `should allow issuance of inline defined token`() {
         driver(DriverParameters(
-                portAllocation = incrementalPortAllocation(15000),
+                portAllocation = incrementalPortAllocation(),
                 startNodesInProcess = false,
                 cordappsForAllNodes = listOf(
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.contracts"),
-                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.workflows")
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.workflows"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.ci"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.selection")
                 ),
                 networkParameters = testNetworkParameters(minimumPlatformVersion = 4, notaries = emptyList())
         )) {
@@ -70,13 +72,15 @@ class TokenDriverTest {
     @Test(expected = TransactionVerificationException.ContractRejection::class)
     fun `should prevent issuance of a token with a null jarHash that does not use an inline tokenType`() {
         driver(DriverParameters(
-                portAllocation = incrementalPortAllocation(10000),
+                portAllocation = incrementalPortAllocation(),
                 startNodesInProcess = false,
                 cordappsForAllNodes = listOf(
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.money"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.selection"),
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.contracts"),
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.workflows"),
-                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.testing")
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.testing"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.ci")
                 ),
                 networkParameters = testNetworkParameters(minimumPlatformVersion = 4, notaries = emptyList())
         )) {
@@ -91,16 +95,18 @@ class TokenDriverTest {
         }
     }
 
-    @Test(timeout = 300_000)
+    @Test(timeout = 500_000)
     fun `beefy tokens integration test`() {
         driver(DriverParameters(
-                portAllocation = incrementalPortAllocation(20000),
+                portAllocation = incrementalPortAllocation(),
                 startNodesInProcess = false,
                 cordappsForAllNodes = listOf(
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.money"),
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.contracts"),
                         TestCordapp.findCordapp("com.r3.corda.lib.tokens.workflows"),
-                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.testing")
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.testing"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.ci"),
+                        TestCordapp.findCordapp("com.r3.corda.lib.tokens.selection")
                 ),
                 // TODO this should be default to 4 in main corda no?
                 networkParameters = testNetworkParameters(minimumPlatformVersion = 4, notaries = emptyList())
